@@ -92,7 +92,7 @@ function PersonTile({
     <div className={cx(TILE, talking ? TILE_TALKING : TILE_IDLE)} style={{ background: `${member.accent}26` }}>
       <HeadStatus value={v} pop={pop} barClass={big ? "w-40" : "w-28"} className="z-10 pt-3" />
       <div className="relative min-h-0 w-full flex-1">
-        <Avatar palette={member} suspicion={shown} getLevel={getLevel} className="absolute inset-x-0 bottom-0 mx-auto h-full w-auto" />
+        <Avatar palette={member} suspicion={shown} getLevel={getLevel} className="absolute inset-0 m-auto h-full max-w-full p-2" />
       </div>
       <NameTag>
         {member.name} <span className="font-bold text-muted">· {member.title}</span>

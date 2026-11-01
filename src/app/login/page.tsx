@@ -12,7 +12,7 @@ import { PARTY_CAST, PRESETS } from "@/lib/presets";
 const LINEUP = [
   { who: { ...PRESETS[0], name: PRESETS[0].character }, sus: 20 },
   { who: { ...PRESETS[1], name: PRESETS[1].character }, sus: 45 },
-  { who: PARTY_CAST[0], sus: 70 },
+  { who: PARTY_CAST[1], sus: 70 },
   { who: PARTY_CAST[2], sus: 90 },
 ];
 
@@ -67,16 +67,16 @@ export default function LoginPage() {
             {LINEUP.map(({ who, sus }) => (
               <div
                 key={who.name}
-                className="flex justify-center overflow-hidden rounded-2xl border-2 border-lav-2 pt-2 shadow-[0_4px_0_var(--lav-2)]"
+                className="flex justify-center overflow-hidden rounded-2xl border-2 border-lav-2 p-1.5 shadow-[0_4px_0_var(--lav-2)]"
                 style={{ background: `${who.accent}26` }}
                 title={who.name}
               >
-                <Avatar palette={who} suspicion={sus} getLevel={() => 0} className="w-[85%]" />
+                <Avatar palette={who} suspicion={sus} getLevel={() => 0} className="w-full" />
               </div>
             ))}
           </div>
           <p className="mt-3 text-sm font-extrabold text-muted">
-            Dana, Priya, Maya and Jordan can smell a larp from a mile away.
+            Dana, Priya, Theo and Jordan can smell a larp from a mile away.
           </p>
         </div>
         <Card>

@@ -119,7 +119,7 @@ function Debrief() {
             <div className="mx-auto w-48">
               <SuspicionBar value={barValue} events={[]} selected={null} onSelect={() => {}} lastDelta={null} shaking={false} />
             </div>
-            <div className="mx-auto mt-3 w-36 overflow-hidden rounded-3xl pt-2" style={{ background: `${hero.accent}26` }}>
+            <div className="mx-auto mt-3 w-36 overflow-hidden rounded-3xl p-2" style={{ background: `${hero.accent}26` }}>
               <Avatar palette={hero} suspicion={barValue} getLevel={() => 0} className="mx-auto w-32" />
             </div>
             <div className="mt-3 text-6xl font-black tracking-tight sm:text-7xl" style={{ color: tone }}>

@@ -114,11 +114,11 @@ function ProfileForm() {
           </p>
           <div className="mt-8 grid max-w-lg grid-cols-[112px_1fr] items-center gap-4 sm:grid-cols-[176px_1fr] sm:gap-6">
             <div
-              className="flex flex-col items-center overflow-hidden rounded-3xl border-2 border-lav-2 pt-3 shadow-[0_5px_0_var(--lav-2)]"
+              className="flex flex-col items-center overflow-hidden rounded-3xl border-2 border-lav-2 py-3 shadow-[0_5px_0_var(--lav-2)]"
               style={{ background: `${PRESETS[0].accent}26` }}
             >
               <HeadStatus value={demoSus} barClass="w-12 sm:w-24" />
-              <Avatar palette={PRESETS[0]} suspicion={demoSus} getLevel={() => 0} className="mt-1 w-24 sm:w-36" />
+              <Avatar palette={PRESETS[0]} suspicion={demoSus} getLevel={() => 0} className="mt-2 w-20 sm:w-32" />
             </div>
             <ol className="space-y-2">
               {[

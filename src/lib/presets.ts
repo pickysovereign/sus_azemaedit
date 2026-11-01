@@ -1,5 +1,8 @@
 import type { ScenarioId, Setup } from "./schemas";
 
+/** Illustrated character; each has a face per mood in public/avatars/<id>/. */
+export type AvatarId = "dana" | "sam" | "female" | "male";
+
 /** Client-safe scenario metadata. Agent config (voice, LLM, prompt) lives in prompts/npc/*.md. */
 export interface ScenarioPreset {
   id: ScenarioId;
@@ -8,11 +11,9 @@ export interface ScenarioPreset {
   title: string;
   blurb: string;
   defaultGoal: string;
-  /** Avatar palette. */
-  skin: string;
-  hair: string;
+  /** Portrait set in public/avatars/, plus the tile tint behind it. */
+  avatar: AvatarId;
   accent: string;
-  hairStyle: "short" | "long" | "bun" | "curly";
 }
 
 export const PRESETS: ScenarioPreset[] = [
@@ -23,10 +24,8 @@ export const PRESETS: ScenarioPreset[] = [
     title: "Senior technical recruiter",
     blurb: "A brisk phone screen. Dana has read a thousand padded résumés.",
     defaultGoal: "Get Dana to move you forward to the hiring-manager round.",
-    skin: "#f1c7a5",
-    hair: "#3b2a20",
+    avatar: "dana",
     accent: "#7c5cff",
-    hairStyle: "long",
   },
   {
     id: "networking",
@@ -35,10 +34,8 @@ export const PRESETS: ScenarioPreset[] = [
     title: "Founder at a startup mixer",
     blurb: "Fast talker, sizing you up as a hire, partner or intro.",
     defaultGoal: "Get Priya to offer an intro to her investor.",
-    skin: "#a8714f",
-    hair: "#24140e",
+    avatar: "female",
     accent: "#19c39c",
-    hairStyle: "bun",
   },
 ];
 
@@ -50,10 +47,8 @@ export const PARTY_PRESET: ScenarioPreset = {
   title: "Interview panel at Lumen",
   blurb: "A CTO, a CEO and a design lead interview you at once. Three people, one cover story.",
   defaultGoal: "Get an offer to join Lumen.",
-  skin: "#f1c7a5",
-  hair: "#1d1410",
+  avatar: "female",
   accent: "#f59f00",
-  hairStyle: "bun",
 };
 
 export const GROUP_PRESET: ScenarioPreset = {
@@ -63,10 +58,8 @@ export const GROUP_PRESET: ScenarioPreset = {
   title: "2-3 characters you write",
   blurb: "Build your own group of up to three characters.",
   defaultGoal: "Convince the whole group you are who you say you are.",
-  skin: "#c98e63",
-  hair: "#151515",
+  avatar: "male",
   accent: "#4dabf7",
-  hairStyle: "curly",
 };
 
 /** One person on stage. `label` is their multi-voice tag (empty for 1-on-1 scenes). */
@@ -76,23 +69,18 @@ export interface CastMember {
   label: string;
   /** What this character knows well enough to spot a faker (group scenes). */
   expertise: string;
-  skin: string;
-  hair: string;
+  avatar: AvatarId;
   accent: string;
-  hairStyle: ScenarioPreset["hairStyle"];
 }
 
 export const PARTY_CAST: CastMember[] = [
-  { name: "Maya", title: "CTO", label: "Maya", expertise: "software engineering, system design, infrastructure, engineering teams and hiring", skin: "#f1c7a5", hair: "#1d1410", accent: "#f59f00", hairStyle: "bun" },
-  { name: "Theo", title: "CEO & co-founder", label: "Theo", expertise: "business impact, revenue and growth metrics, fundraising, company culture, go-to-market", skin: "#e8b796", hair: "#8a6a4a", accent: "#7c5cff", hairStyle: "short" },
-  { name: "Jordan", title: "Head of design", label: "Jordan", expertise: "product and visual design, UX research, design systems, design tools, design-engineering handoff", skin: "#8d5a3b", hair: "#151515", accent: "#e64980", hairStyle: "curly" },
+  { name: "Maya", title: "CTO", label: "Maya", expertise: "software engineering, system design, infrastructure, engineering teams and hiring", avatar: "female", accent: "#f59f00" },
+  { name: "Theo", title: "CEO & co-founder", label: "Theo", expertise: "business impact, revenue and growth metrics, fundraising, company culture, go-to-market", avatar: "male", accent: "#7c5cff" },
+  { name: "Jordan", title: "Head of design", label: "Jordan", expertise: "product and visual design, UX research, design systems, design tools, design-engineering handoff", avatar: "sam", accent: "#e64980" },
 ];
 
-const GROUP_LOOKS: Pick<CastMember, "skin" | "hair" | "accent" | "hairStyle">[] = [
-  { skin: "#f1c7a5", hair: "#3b2a20", accent: "#4dabf7", hairStyle: "long" },
-  { skin: "#c98e63", hair: "#151515", accent: "#ff8a3d", hairStyle: "short" },
-  { skin: "#a8714f", hair: "#24140e", accent: "#19c39c", hairStyle: "curly" },
-];
+/** Tile tints for group-scene characters, in stage order. */
+const GROUP_ACCENTS = ["#4dabf7", "#ff8a3d", "#19c39c"];
 
 export const isGroupScenario = (id: ScenarioId) => id === "party" || id === "group";
 
@@ -103,24 +91,27 @@ export const CUSTOM_PRESET: ScenarioPreset = {
   title: "Your own character",
   blurb: "Write your own character and goal.",
   defaultGoal: "Convince them you are who you say you are.",
-  skin: "#e8b796",
-  hair: "#5a3b2b",
+  avatar: "female",
   accent: "#e64980",
-  hairStyle: "curly",
 };
 
 /**
  * Premade ElevenLabs voices offered for custom characters. IDs are ElevenLabs default voices;
  * check they are in your account's voice library.
  */
-export const VOICES = [
-  { id: "JBFqnCBsd6RMkjVDRZzb", label: "George (warm, British)" },
-  { id: "21m00Tcm4TlvDq8ikWAM", label: "Rachel (calm, American)" },
-  { id: "TxGEqnHWrfWFTfGW9XjX", label: "Josh (young, American)" },
-  { id: "XB0fDUnXU5powFXDhCwa", label: "Charlotte (bright, Swedish-English)" },
-  { id: "IKne3meq5aSn9XLyUdCD", label: "Charlie (casual, Australian)" },
-  { id: "EXAVITQu4vr4xnSDxMaL", label: "Sarah (soft, American)" },
+export const VOICES: { id: string; label: string; avatar: AvatarId }[] = [
+  { id: "JBFqnCBsd6RMkjVDRZzb", label: "George (warm, British)", avatar: "male" },
+  { id: "21m00Tcm4TlvDq8ikWAM", label: "Rachel (calm, American)", avatar: "female" },
+  { id: "TxGEqnHWrfWFTfGW9XjX", label: "Josh (young, American)", avatar: "male" },
+  { id: "XB0fDUnXU5powFXDhCwa", label: "Charlotte (bright, Swedish-English)", avatar: "female" },
+  { id: "IKne3meq5aSn9XLyUdCD", label: "Charlie (casual, Australian)", avatar: "male" },
+  { id: "EXAVITQu4vr4xnSDxMaL", label: "Sarah (soft, American)", avatar: "female" },
 ];
+
+/** Portrait for a custom character: matches their voice. */
+export function voiceAvatar(voiceId: string, fallback: AvatarId): AvatarId {
+  return VOICES.find((v) => v.id === voiceId)?.avatar ?? fallback;
+}
 
 /** Multi-voice tag for a premade voice: its first word, e.g. "George". */
 export function voiceLabel(voiceId: string): string {
@@ -142,13 +133,14 @@ export function castFor(setup: Pick<Setup, "scenarioId" | "custom" | "group">): 
       title: c.personality.split(/[.,]/)[0].slice(0, 40),
       label: voiceLabel(c.voiceId),
       expertise: c.expertise || "nothing in particular (judges mostly on consistency and confidence)",
-      ...GROUP_LOOKS[i % GROUP_LOOKS.length],
+      avatar: voiceAvatar(c.voiceId, i % 2 ? "male" : "female"),
+      accent: GROUP_ACCENTS[i % GROUP_ACCENTS.length],
     }));
   }
   const p = presetFor(setup.scenarioId);
   const custom = setup.scenarioId === "custom" ? setup.custom : undefined;
-  const { skin, hair, accent, hairStyle } = p;
+  const avatar = custom ? voiceAvatar(custom.voiceId, p.avatar) : p.avatar;
   return [
-    { name: custom?.name ?? p.character, title: custom ? "Custom character" : p.title, label: "", expertise: "", skin, hair, accent, hairStyle },
+    { name: custom?.name ?? p.character, title: custom ? "Custom character" : p.title, label: "", expertise: "", avatar, accent: p.accent },
   ];
 }
